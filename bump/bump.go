@@ -2,6 +2,7 @@ package bump
 
 import (
 	"fmt"
+	"path"
 	"regexp"
 	"strings"
 
@@ -197,6 +198,7 @@ func (b *Bump) bumpComponent(name string, l Language, action int, versions map[s
 		}
 
 		modifiedFiles, err := b.incrementVersion(
+			dir,
 			filterFiles(langSettings.Files, f),
 			*langSettings,
 			action,
@@ -213,12 +215,13 @@ func (b *Bump) bumpComponent(name string, l Language, action int, versions map[s
 	return files, nil
 }
 
-func (b *Bump) incrementVersion(files []string, lang langs.Language, action int, versions map[string]int, version *string) ([]string, error) {
+func (b *Bump) incrementVersion(dir string, files []string, lang langs.Language, action int, versions map[string]int, version *string) ([]string, error) {
 	var identified bool
 	modifiedFiles := make([]string, 0)
 
 	for _, file := range files {
-		fileContent, err := readFile(b.FS, file)
+		filepath := path.Join(dir, file)
+		fileContent, err := readFile(b.FS, filepath)
 		if err != nil {
 			return []string{}, errors.Wrapf(err, "error reading a file %v", file)
 		}
@@ -233,7 +236,7 @@ func (b *Bump) incrementVersion(files []string, lang langs.Language, action int,
 					if regex.MatchString(line) {
 						oldVersion, err = semver.StrictNewVersion(regex.ReplaceAllString(line, "${1}"))
 						if err != nil {
-							return []string{}, errors.Wrapf(err, "error parsing semantic version at file %v", file)
+							return []string{}, errors.Wrapf(err, "error parsing semantic version at file %v", filepath)
 						}
 						break outer
 					}
@@ -245,7 +248,7 @@ func (b *Bump) incrementVersion(files []string, lang langs.Language, action int,
 			for _, field := range *lang.JSONFields {
 				oldVersion, err = semver.StrictNewVersion(gjson.Get(strings.Join(fileContent, ""), field).String())
 				if err != nil {
-					return []string{}, errors.Wrapf(err, "error parsing semantic version at file %v", file)
+					return []string{}, errors.Wrapf(err, "error parsing semantic version at file %v", filepath)
 				}
 				break
 			}
@@ -263,7 +266,7 @@ func (b *Bump) incrementVersion(files []string, lang langs.Language, action int,
 				newVersion = oldVersion.IncPatch()
 			}
 
-			console.VersionUpdate(oldVersion.String(), newVersion.String(), file)
+			console.VersionUpdate(oldVersion.String(), newVersion.String(), filepath)
 			*version = newVersion.String()
 			identified = true
 			versions[oldVersion.String()]++
@@ -289,11 +292,11 @@ func (b *Bump) incrementVersion(files []string, lang langs.Language, action int,
 				}
 
 				newContent = append(newContent, "")
-				if err := writeFile(b.FS, file, strings.Join(newContent, "\n")); err != nil {
-					return []string{}, errors.Wrapf(err, "error writing to file %v", file)
+				if err := writeFile(b.FS, filepath, strings.Join(newContent, "\n")); err != nil {
+					return []string{}, errors.Wrapf(err, "error writing to file %v", filepath)
 				}
 
-				modifiedFiles = append(modifiedFiles, file)
+				modifiedFiles = append(modifiedFiles, filepath)
 			}
 
 			if lang.JSONFields != nil {
@@ -304,11 +307,11 @@ func (b *Bump) incrementVersion(files []string, lang langs.Language, action int,
 							return []string{}, errors.Wrapf(err, "error setting new version on content of a file %v", file)
 						}
 
-						if err := writeFile(b.FS, file, newContent); err != nil {
-							return []string{}, errors.Wrapf(err, "error writing to file %v", file)
+						if err := writeFile(b.FS, filepath, newContent); err != nil {
+							return []string{}, errors.Wrapf(err, "error writing to file %v", filepath)
 						}
 
-						modifiedFiles = append(modifiedFiles, file)
+						modifiedFiles = append(modifiedFiles, filepath)
 					}
 				}
 			}

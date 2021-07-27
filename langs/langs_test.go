@@ -13,7 +13,7 @@ func TestNew(t *testing.T) {
 	a := assert.New(t)
 
 	var dockerRegex = []string{
-		fmt.Sprintf("^LABEL \"[vV]ersion\"=\"[vV]?(?P<version>%v)\"", changelog.SemVerRegex),
+		fmt.Sprintf("^LABEL\\s+\"[vV]ersion\"\\s*=\\s*\"[vV]?(?P<version>%v)\"", changelog.SemVerRegex),
 	}
 
 	var golangRegex = []string{

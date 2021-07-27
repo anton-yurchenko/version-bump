@@ -360,7 +360,7 @@ func main() {
 import "fmt"
 
 const (
-	Version                                          string = "1.2.3"
+	Version                                          string = "1.2.4"
 	SomeVeryLongVariableNameThatAddsALotOfWhitespace string = "abc"
 )
 
