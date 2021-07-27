@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: monthly
+    target-branch: master
+    assignees:
+      - anton-yurchenko
+    labels:
+      - dependencies

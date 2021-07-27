@@ -1,0 +1,12 @@
+# OS
+**/.DS_Store
+
+# IDE
+.vscode/launch.json
+**/__debug_bin
+.idea/
+
+# project
+coverage.txt
+/vendor/
+/dist/

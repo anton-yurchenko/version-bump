@@ -1,0 +1,3 @@
+[Go]
+Enabled = true
+Directories = ['bump']
