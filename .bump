@@ -1,3 +1,4 @@
-[Go]
-Enabled = true
-Directories = ['bump']
+[go]
+enabled = true
+directories = ['bump']
+exclude_files = [ 'bump/bump_test.go' ]

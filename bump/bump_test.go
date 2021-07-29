@@ -55,9 +55,9 @@ func TestNew(t *testing.T) {
 		"Docker": {
 			ConfigFile: configFile{
 				Exists: true,
-				Content: `[Docker]
-Enabled = true
-Directories = ['dir1','dir2']`,
+				Content: `[docker]
+enabled = true
+directories = ['dir1','dir2']`,
 			},
 			ExpectedConfiguration: bump.Configuration{
 				Docker: bump.Language{
@@ -78,9 +78,9 @@ Directories = ['dir1','dir2']`,
 		"Go": {
 			ConfigFile: configFile{
 				Exists: true,
-				Content: `[Go]
-Enabled = true
-Directories = ['dir1','dir2']`,
+				Content: `[go]
+enabled = true
+directories = ['dir1','dir2']`,
 			},
 			ExpectedConfiguration: bump.Configuration{
 				Docker: bump.Language{
@@ -101,9 +101,9 @@ Directories = ['dir1','dir2']`,
 		"JavaScript": {
 			ConfigFile: configFile{
 				Exists: true,
-				Content: `[JavaScript]
-Enabled = true
-Directories = ['dir1','dir2']`,
+				Content: `[javascript]
+enabled = true
+directories = ['dir1','dir2']`,
 			},
 			ExpectedConfiguration: bump.Configuration{
 				Docker: bump.Language{
@@ -124,17 +124,17 @@ Directories = ['dir1','dir2']`,
 		"Complex": {
 			ConfigFile: configFile{
 				Exists: true,
-				Content: `[Docker]
-Enabled = true
-Directories = [ '.', 'tools/qa' ]
+				Content: `[docker]
+enabled = true
+directories = [ '.', 'tools/qa' ]
 				
-[Go]
-Enabled = true
-Directories = [ 'server', 'tools/cli', 'tools/qa' ]
+[go]
+enabled = true
+directories = [ 'server', 'tools/cli', 'tools/qa' ]
 				
-[JavaScript]
-Enabled = true
-Directories = [ 'client' ]`,
+[javascript]
+enabled = true
+directories = [ 'client' ]`,
 			},
 			ExpectedConfiguration: bump.Configuration{
 				Docker: bump.Language{
@@ -148,6 +148,43 @@ Directories = [ 'client' ]`,
 				JavaScript: bump.Language{
 					Enabled:     true,
 					Directories: []string{"client"},
+				},
+			},
+			ExpectedError: "",
+		},
+		"Exclude Files": {
+			ConfigFile: configFile{
+				Exists: true,
+				Content: `[docker]
+enabled = true
+directories = [ '.', 'tools/qa' ]
+exclude_files = [ 'tools/qa/Dockerfile' ]
+				
+[go]
+enabled = true
+directories = [ 'server', 'tools/cli', 'tools/qa' ]
+exclude_files = [ 'tools/cli/main_test.go' ]
+				
+[javascript]
+enabled = true
+directories = [ 'client' ]
+exclude_files = [ 'client/test.js' ]`,
+			},
+			ExpectedConfiguration: bump.Configuration{
+				Docker: bump.Language{
+					Enabled:      true,
+					Directories:  []string{".", "tools/qa"},
+					ExcludeFiles: []string{"tools/qa/Dockerfile"},
+				},
+				Go: bump.Language{
+					Enabled:      true,
+					Directories:  []string{"server", "tools/cli", "tools/qa"},
+					ExcludeFiles: []string{"tools/cli/main_test.go"},
+				},
+				JavaScript: bump.Language{
+					Enabled:      true,
+					Directories:  []string{"client"},
+					ExcludeFiles: []string{"client/test.js"},
 				},
 			},
 			ExpectedError: "",
@@ -603,6 +640,88 @@ ENTRYPOINT [ "/app" ]`,
 			MockCreateTagError: nil,
 			ExpectedError:      "error commiting changes: error commiting changes: reason",
 		},
+		"Exclude Files": {
+			Version: "2.0.0",
+			Configuration: bump.Configuration{
+				Docker: bump.Language{
+					Enabled:     true,
+					Directories: []string{"."},
+				},
+				Go: bump.Language{
+					Enabled:      true,
+					Directories:  []string{".", "lib"},
+					ExcludeFiles: []string{"lib/lib_test.go"},
+				},
+			},
+			Files: allFiles{
+				Docker: map[string][]file{
+					".": {
+						{
+							Name:                "Dockerfile",
+							ExpectedToBeChanged: true,
+							Content: `FROM golang:1.16 as builder
+WORKDIR /opt/src
+COPY . .
+RUN groupadd -g 1000 appuser &&\
+	useradd -m -u 1000 -g appuser appuser
+
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o /opt/app
+FROM scratch
+LABEL "repository"="https://github.com/anton-yurchenko/git-release"
+LABEL "maintainer"="Anton Yurchenko <anton.doar@gmail.com>"
+LABEL "version"="1.2.3"
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/passwd /etc/passwd
+COPY LICENSE.md /LICENSE.md
+COPY --from=builder --chown=1000:0 /opt/app /app
+ENTRYPOINT [ "/app" ]`,
+						},
+					},
+				},
+				Go: map[string][]file{
+					".": {
+						{
+							Name:                "main.go",
+							ExpectedToBeChanged: true,
+							Content: `package main
+
+import "fmt"
+							
+const Version string = "1.2.3"
+							
+func main() {
+	fmt.Println(Version)
+}`,
+						},
+					},
+					"lib": {
+						{
+							Name:                "lib.go",
+							ExpectedToBeChanged: true,
+							Content: `package lib
+
+import "fmt"
+
+const Version string = "1.2.3"`,
+						},
+						{
+							Name:                "lib_test.go",
+							ExpectedToBeChanged: false,
+							Content: `package lib_test
+
+import "fmt"
+
+const Version string = "1.2.3"`,
+						},
+					},
+				},
+			},
+			Action:             bump.Major,
+			MockAddError:       nil,
+			MockCommitError:    nil,
+			MockCreateTagError: nil,
+			ExpectedError:      "",
+		},
 	}
 
 	var counter int
@@ -696,26 +815,44 @@ ENTRYPOINT [ "/app" ]`,
 		}
 
 		if shouldBeCommitted {
-			for _, files := range test.Files.Docker {
+			for dir, files := range test.Files.Docker {
 				for _, file := range files {
 					if file.ExpectedToBeChanged {
-						m2.On("Add", file.Name).Return(nil, test.MockAddError).Once()
+						var f string
+						if dir == "." {
+							f = file.Name
+						} else {
+							f = path.Join(dir, file.Name)
+						}
+						m2.On("Add", f).Return(nil, test.MockAddError).Once()
 					}
 				}
 			}
 
-			for _, files := range test.Files.Go {
+			for dir, files := range test.Files.Go {
 				for _, file := range files {
 					if file.ExpectedToBeChanged {
-						m2.On("Add", file.Name).Return(nil, test.MockAddError).Once()
+						var f string
+						if dir == "." {
+							f = file.Name
+						} else {
+							f = path.Join(dir, file.Name)
+						}
+						m2.On("Add", f).Return(nil, test.MockAddError).Once()
 					}
 				}
 			}
 
-			for _, files := range test.Files.JavaScript {
+			for dir, files := range test.Files.JavaScript {
 				for _, file := range files {
 					if file.ExpectedToBeChanged {
-						m2.On("Add", file.Name).Return(nil, test.MockAddError).Once()
+						var f string
+						if dir == "." {
+							f = file.Name
+						} else {
+							f = path.Join(dir, file.Name)
+						}
+						m2.On("Add", f).Return(nil, test.MockAddError).Once()
 					}
 				}
 			}

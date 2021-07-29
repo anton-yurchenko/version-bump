@@ -43,6 +43,7 @@ type Configuration struct {
 }
 
 type Language struct {
-	Enabled     bool
-	Directories []string
+	Enabled      bool
+	Directories  []string
+	ExcludeFiles []string `toml:"exclude_files"`
 }

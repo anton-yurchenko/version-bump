@@ -46,22 +46,25 @@ func New(fs afero.Fs, meta, data billy.Filesystem, dir string) (*Bump, error) {
 		FS: fs,
 		Configuration: Configuration{
 			Docker: struct {
-				Enabled     bool
-				Directories []string
+				Enabled      bool
+				Directories  []string
+				ExcludeFiles []string `toml:"exclude_files"`
 			}{
 				Enabled:     true,
 				Directories: dirs,
 			},
 			Go: struct {
-				Enabled     bool
-				Directories []string
+				Enabled      bool
+				Directories  []string
+				ExcludeFiles []string `toml:"exclude_files"`
 			}{
 				Enabled:     true,
 				Directories: dirs,
 			},
 			JavaScript: struct {
-				Enabled     bool
-				Directories []string
+				Enabled      bool
+				Directories  []string
+				ExcludeFiles []string `toml:"exclude_files"`
 			}{
 				Enabled:     true,
 				Directories: dirs,
@@ -94,22 +97,25 @@ func New(fs afero.Fs, meta, data billy.Filesystem, dir string) (*Bump, error) {
 
 	o.Configuration = Configuration{
 		Docker: struct {
-			Enabled     bool
-			Directories []string
+			Enabled      bool
+			Directories  []string
+			ExcludeFiles []string `toml:"exclude_files"`
 		}{
 			Enabled:     userConfig.Docker.Enabled,
 			Directories: dirs,
 		},
 		Go: struct {
-			Enabled     bool
-			Directories []string
+			Enabled      bool
+			Directories  []string
+			ExcludeFiles []string `toml:"exclude_files"`
 		}{
 			Enabled:     userConfig.Go.Enabled,
 			Directories: dirs,
 		},
 		JavaScript: struct {
-			Enabled     bool
-			Directories []string
+			Enabled      bool
+			Directories  []string
+			ExcludeFiles []string `toml:"exclude_files"`
 		}{
 			Enabled:     userConfig.JavaScript.Enabled,
 			Directories: dirs,
@@ -126,6 +132,18 @@ func New(fs afero.Fs, meta, data billy.Filesystem, dir string) (*Bump, error) {
 
 	if len(userConfig.JavaScript.Directories) != 0 {
 		o.Configuration.JavaScript.Directories = userConfig.JavaScript.Directories
+	}
+
+	if len(userConfig.Docker.ExcludeFiles) != 0 {
+		o.Configuration.Docker.ExcludeFiles = userConfig.Docker.ExcludeFiles
+	}
+
+	if len(userConfig.Go.ExcludeFiles) != 0 {
+		o.Configuration.Go.ExcludeFiles = userConfig.Go.ExcludeFiles
+	}
+
+	if len(userConfig.JavaScript.ExcludeFiles) != 0 {
+		o.Configuration.JavaScript.ExcludeFiles = userConfig.JavaScript.ExcludeFiles
 	}
 
 	return o, nil
@@ -187,7 +205,7 @@ func (b *Bump) bumpComponent(name string, l Language, action int, versions map[s
 	files := make([]string, 0)
 
 	for _, dir := range l.Directories {
-		f, err := getFiles(b.FS, dir)
+		f, err := getFiles(b.FS, dir, l.ExcludeFiles)
 		if err != nil {
 			return []string{}, errors.Wrap(err, "error listing directory files")
 		}

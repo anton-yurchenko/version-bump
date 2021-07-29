@@ -51,29 +51,33 @@ Run **version-bump** in a root of the project: `version-bump <major/minor/patch>
 
     ```
     [ <language-name> ]
-    Enabled = true/false
-    Directories = [ <path>, <path>, ... ]
+    enabled = true/false
+    directories = [ <path>, <path>, ... ]
+    exclude_files = [ <path>, <path>, ... ]
     ```
 
-    - `Enabled` - default `false`
-    - `Directories` - default `['.']`
+    - `<language-name>` - one of `[ 'docker', 'go', 'javascript' ]`
+    - `enabled` - default `false`
+    - `directories` - default `['.']`
+    - `exclude_files` - default `[]`
 
 3. Run **version-bump** in a root of the project: `version-bump <major/minor/patch>`
 
 *Configuration Example:*
 
 ```toml
-[Docker]
-Enabled = true
-Directories = [ '.', 'tools/qa' ]
+[docker]
+enabled = true
+directories = [ '.', 'tools/qa' ]
 
-[Go]
-Enabled = true
-Directories = [ 'server', 'tools/cli', 'tools/qa' ]
+[go]
+enabled = true
+directories = [ 'server', 'tools/cli', 'tools/qa' ]
+exclude_files = [ 'server/server_test.go', 'tools/qa/main_test.go' ]
 
-[JavaScript]
-Enabled = true
-Directories = [ 'client' ]
+[javascript]
+enabled = true
+directories = [ 'client' ]
 ```
 
 ## Remarks

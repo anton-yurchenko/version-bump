@@ -3,13 +3,14 @@ package bump
 import (
 	"bufio"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 )
 
-func getFiles(fs afero.Fs, dir string) ([]string, error) {
+func getFiles(fs afero.Fs, dir string, excludeFiles []string) ([]string, error) {
 	res := make([]string, 0)
 
 	files, err := afero.ReadDir(fs, dir)
@@ -17,8 +18,14 @@ func getFiles(fs afero.Fs, dir string) ([]string, error) {
 		return res, err
 	}
 
+main:
 	for _, f := range files {
 		if !f.IsDir() {
+			for _, e := range excludeFiles {
+				if path.Join(dir, f.Name()) == e {
+					continue main
+				}
+			}
 			res = append(res, f.Name())
 		}
 	}
