@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"path"
-	"path/filepath"
 	"sync"
 	"time"
 	"version-bump/bump"
@@ -26,12 +25,7 @@ func run(action int) {
 	wg.Add(1)
 	go getLatestVersion(&wg, updateVersion, updateVersionError)
 
-	// bump version
-	dir, err := filepath.Abs(filepath.Dir("."))
-	if err != nil {
-		console.Fatal(errors.Wrap(err, "error retrieving project location"))
-	}
-
+	dir := "."
 	p, err := bump.New(afero.NewOsFs(), osfs.New(path.Join(dir, ".git")), osfs.New(dir), dir)
 	if err != nil {
 		console.Fatal(errors.Wrap(err, "error preparing project configuration"))
