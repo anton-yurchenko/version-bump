@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- Improve Docker matcher to support multiple labels and multiline label
+
 ## [1.1.0] - 2021-07-29
 ### Fixed
 - Filepath when a single file is change and no `.bump` file is present
