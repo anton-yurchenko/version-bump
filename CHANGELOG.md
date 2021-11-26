@@ -1,8 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [2.0.0] - 2021-11-26
 ### Added
 - Improve Docker matcher to support multiple labels and multiline label
+
+### Changed
+- Use OCI Image Specs for Dockerfile label 
+- Update dependencies
 
 ## [1.1.0] - 2021-07-29
 ### Fixed
@@ -21,7 +25,8 @@
 ## [1.0.0] - 2021-07-27
 _First release_
 
-[Unreleased]: https://github.com/anton-yurchenko/version-bump/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/anton-yurchenko/version-bump/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/anton-yurchenko/version-bump/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/anton-yurchenko/version-bump/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/anton-yurchenko/version-bump/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/anton-yurchenko/version-bump/releases/tag/v1.0.0

@@ -36,7 +36,7 @@ But some languages are leaving that decision to a developer, thus **version-bump
 
 | Language      | Expected Values                               | Filename                              |
 |:-------------:|:---------------------------------------------:|:-------------------------------------:|
-| Docker        | `Version`/`version` label                     | `Dockerfile`                          |
+| Docker        | `org.opencontainers.image.version` label      | `Dockerfile`                          |
 | Go            | String constant named `Version`/`version`     | `*.go`                                |
 | JavaScript    | JSON `version` field                          | `package.json`, `package-lock.json`   |
 

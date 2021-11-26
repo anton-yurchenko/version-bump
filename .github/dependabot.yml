@@ -4,7 +4,16 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
-    target-branch: master
+    target-branch: main
+    assignees:
+      - anton-yurchenko
+    labels:
+      - dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: monthly
+    target-branch: main
     assignees:
       - anton-yurchenko
     labels:
