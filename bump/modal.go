@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Version string = "1.1.0"
+	Version string = "2.0.0"
 	Patch   int    = 3
 	Minor   int    = 2
 	Major   int    = 1
