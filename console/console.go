@@ -17,8 +17,8 @@ func IncrementProjectVersion() {
 	fmt.Println("Incrementing project version...")
 }
 
-func CommitingChanges() {
-	fmt.Println("Commiting changes...")
+func CommittingChanges() {
+	fmt.Println("Committing changes...")
 }
 
 func Language(name string) {

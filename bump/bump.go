@@ -190,10 +190,10 @@ func (b *Bump) Bump(action int) error {
 	}
 
 	if len(files) != 0 {
-		console.CommitingChanges()
+		console.CommittingChanges()
 
 		if err := b.Git.Save(files, version); err != nil {
-			return errors.Wrap(err, "error commiting changes")
+			return errors.Wrap(err, "error committing changes")
 		}
 	}
 
