@@ -3,7 +3,7 @@ module version-bump
 go 1.17
 
 require (
-	github.com/Masterminds/semver/v3 v3.1.1
+	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/anton-yurchenko/go-changelog v1.0.4
 	github.com/go-git/go-billy/v5 v5.3.1
 	github.com/go-git/go-git/v5 v5.4.2
