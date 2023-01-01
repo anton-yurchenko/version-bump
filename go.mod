@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/anton-yurchenko/go-changelog v1.0.4
-	github.com/go-git/go-billy/v5 v5.3.1
+	github.com/go-git/go-billy/v5 v5.4.0
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/pkg/errors v0.9.1
@@ -39,7 +39,7 @@ require (
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/net v0.1.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
