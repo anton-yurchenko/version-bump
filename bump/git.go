@@ -48,7 +48,7 @@ func Commit(files []string, version string, sign *object.Signature, worktree Wor
 		Committer: sign,
 	})
 	if err != nil {
-		return plumbing.Hash{}, errors.Wrap(err, "error commiting changes")
+		return plumbing.Hash{}, errors.Wrap(err, "error committing changes")
 	}
 
 	return hash, nil

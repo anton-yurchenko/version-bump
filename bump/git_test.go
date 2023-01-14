@@ -57,7 +57,7 @@ func TestSave(t *testing.T) {
 			MockCreateTagError: errors.New("reason"),
 			ExpectedError:      "error tagging changes: reason",
 		},
-		"Error Commiting Changes": {
+		"Error Committing Changes": {
 			Version: "1.0.0",
 			Files: []string{
 				"file.txt",
@@ -66,7 +66,7 @@ func TestSave(t *testing.T) {
 			MockCommitOutput:   plumbing.NewHash("abc"),
 			MockCommitError:    errors.New("reason"),
 			MockCreateTagError: nil,
-			ExpectedError:      "error commiting changes: reason",
+			ExpectedError:      "error committing changes: reason",
 		},
 	}
 
@@ -142,7 +142,7 @@ func TestCommit(t *testing.T) {
 			MockAddError:    nil,
 			MockCommitHash:  "abc",
 			MockCommitError: errors.New("reason"),
-			ExpectedError:   "error commiting changes: reason",
+			ExpectedError:   "error committing changes: reason",
 		},
 	}
 

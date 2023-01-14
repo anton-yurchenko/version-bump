@@ -836,7 +836,7 @@ ENTRYPOINT [ "/app" ]`,
 			MockAddError:       nil,
 			MockCommitError:    errors.New("reason"),
 			MockCreateTagError: nil,
-			ExpectedError:      "error commiting changes: error commiting changes: reason",
+			ExpectedError:      "error committing changes: error committing changes: reason",
 		},
 		"Exclude Files": {
 			Version: "2.0.0",
