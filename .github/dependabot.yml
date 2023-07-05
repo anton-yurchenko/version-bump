@@ -10,9 +10,7 @@ updates:
       - dependencies
     ignore:
       - dependency-name: "*"
-        update-types: [
-          "version-update:semver-patch"
-        ]
+        update-types: ["version-update:semver-patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -23,7 +21,5 @@ updates:
       - anton-yurchenko
     ignore:
       - dependency-name: "*"
-        update-types: [
-          "version-update:semver-minor",
-          "version-update:semver-patch"
-        ]
+        update-types:
+          ["version-update:semver-minor", "version-update:semver-patch"]

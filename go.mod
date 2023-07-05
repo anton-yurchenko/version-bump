@@ -1,21 +1,21 @@
 module version-bump
 
-go 1.19
+go 1.20
 
 require (
-	github.com/Masterminds/semver/v3 v3.2.0
-	github.com/anton-yurchenko/go-changelog v1.0.4
+	github.com/Masterminds/semver/v3 v3.2.1
+	github.com/anton-yurchenko/go-changelog v1.0.5
 	github.com/go-git/go-billy/v5 v5.4.1
 	github.com/go-git/go-git/v5 v5.7.0
-	github.com/pelletier/go-toml/v2 v2.0.6
+	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/afero v1.9.3
+	github.com/sirupsen/logrus v1.9.3
+	github.com/spf13/afero v1.9.5
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.3
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
-	golang.org/x/mod v0.10.0
+	golang.org/x/mod v0.12.0
 )
 
 require (

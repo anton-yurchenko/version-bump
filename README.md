@@ -10,7 +10,7 @@ Have you ever made a mistake incrementing a project version?
 Do you have multiple files to update the version at?  
 I was always forgetting to update a `Dockerfile` label or a version constant in `main.go` file. Inspired by `npm bump`, I wrote **version-bump**.  
 
-This application allows easily incrementing a multi-language project [Semantic Version](https://semver.org/), committing the changes and tagging a commit.
+This application allows easily incrementing a single/multi language project [Semantic Version](https://semver.org/), committing the changes and tagging a commit.
 
 ![PIC](docs/images/demo.png)
 
@@ -31,7 +31,7 @@ Download [latest release](https://github.com/anton-yurchenko/version-bump/releas
 In automatic mode, **version-bump** will try to identify versions of all supported languages in a root of the project (wherever executed).
 In a manual mode, **version-bump** will read a configuration file and modify files according to it. It is expected be executed in a root of the project where the configuration file is.
 
-Some languages, have a constant value in a specific file that contains a version, which are fairly easy to increment. 
+Some languages, have a constant value in a specific file that contains a version, which are fairly easy to increment.
 But some languages are leaving that decision to a developer, thus **version-bump** assumes a constant position/value for them as well.
 
 | Language      | Expected Values                               | Filename                              |
@@ -49,7 +49,7 @@ Run **version-bump** in a root of the project: `version-bump <major/minor/patch>
 1. Create a configuration `.bump` file in a root of the project.
 2. Add project languages and their configuration in a form of:
 
-    ```
+    ```toml
     [ <language-name> ]
     enabled = true/false
     directories = [ <path>, <path>, ... ]

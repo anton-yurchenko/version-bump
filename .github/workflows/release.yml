@@ -12,15 +12,14 @@ jobs:
       - name: Init
         uses: actions/setup-go@v4
         with:
-          go-version: 1.16
+          go-version: 1.20
         id: go
 
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Install Dependencies
-        run: |
-          go get -v -t -d ./...
+        run: go get -v -t -d ./...
 
       - name: Lint
         run: |
@@ -63,14 +62,11 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs: [test, scan]
-    env:
-      APP_NAME: version-bump
-      TARGET_ARCH: amd64
     steps:
       - name: Init
         uses: actions/setup-go@v4
         with:
-          go-version: 1.16
+          go-version: 1.20
         id: go
 
       - name: Checkout
@@ -79,33 +75,22 @@ jobs:
       - name: Install Dependencies
         run: go get -v -t -d ./...
 
-      - name: Build Linux
-        env:
-          TARGET_OS: linux
+      - name: Build
         run: |
-          mkdir -p dist/${{ env.TARGET_OS }}
-          GOOS=${{ env.TARGET_OS }} GOARCH=${{ env.TARGET_ARCH }} go build -o dist/${{ env.TARGET_OS }}/${{ env.APP_NAME }}-${{ env.TARGET_OS }}-${{ env.TARGET_ARCH }}
-
-      - name: Build Darwin
-        env:
-          TARGET_OS: darwin
-        run: |
-          mkdir -p dist/${{ env.TARGET_OS }}
-          GOOS=${{ env.TARGET_OS }} GOARCH=${{ env.TARGET_ARCH }} go build -o dist/${{ env.TARGET_OS }}/${{ env.APP_NAME }}-${{ env.TARGET_OS }}-${{ env.TARGET_ARCH }}
-
-      - name: Build Windows
-        env:
-          TARGET_OS: windows
-        run: |
-          mkdir -p dist/${{ env.TARGET_OS }}
-          GOOS=${{ env.TARGET_OS }} GOARCH=${{ env.TARGET_ARCH }} go build -o dist/${{ env.TARGET_OS }}/${{ env.APP_NAME }}-${{ env.TARGET_OS }}-${{ env.TARGET_ARCH }}.exe
+          GOOS=linux GOARCH=amd64 go build -o version-bump-linux-amd64
+          GOOS=linux GOARCH=arm64 go build -o version-bump-linux-arm64
+          GOOS=windows GOARCH=amd64 go build -o version-bump-windows-amd64.exe
+          GOOS=darwin GOARCH=amd64 go build -o version-bump-darwin-amd64
+          GOOS=darwin GOARCH=arm64 go build -o version-bump-darwin-arm64
 
       - name: Release
-        uses: docker://antonyurchenko/git-release:latest
+        uses: docker://antonyurchenko/git-release:v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: |
-            dist/linux/${{ env.APP_NAME }}-linux-${{ env.TARGET_ARCH }}
-            dist/darwin/${{ env.APP_NAME }}-darwin-${{ env.TARGET_ARCH }}
-            dist/windows/${{ env.APP_NAME }}-windows-${{ env.TARGET_ARCH }}.exe
+            version-bump-linux-amd64
+            version-bump-linux-arm64
+            version-bump-windows-amd64.exe
+            version-bump-darwin-amd64
+            version-bump-darwin-arm64
