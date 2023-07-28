@@ -13,7 +13,7 @@ require (
 	github.com/spf13/afero v1.9.5
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tidwall/gjson v1.14.4
+	github.com/tidwall/gjson v1.15.0
 	github.com/tidwall/sjson v1.2.5
 	golang.org/x/mod v0.12.0
 )
