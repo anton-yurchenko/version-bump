@@ -190,6 +190,7 @@ func (b *Bump) Bump(action int) error {
 	}
 
 	if len(files) != 0 {
+		// TODO: update changelog
 		console.CommittingChanges()
 
 		if err := b.Git.Save(files, version); err != nil {
