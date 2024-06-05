@@ -15,7 +15,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/tidwall/gjson v1.17.0
 	github.com/tidwall/sjson v1.2.5
-	golang.org/x/mod v0.17.0
+	golang.org/x/mod v0.18.0
 )
 
 require (
