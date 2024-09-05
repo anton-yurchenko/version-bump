@@ -1,6 +1,7 @@
 module version-bump
 
 go 1.21
+toolchain go1.22.5
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1
@@ -15,7 +16,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/tidwall/gjson v1.17.0
 	github.com/tidwall/sjson v1.2.5
-	golang.org/x/mod v0.20.0
+	golang.org/x/mod v0.21.0
 )
 
 require (
